@@ -1,0 +1,13 @@
+# Hardware Managers from Foundation Central
+# Retrieved: 2026-01-23T04:07:52Z
+# Foundation Central: 10.193.210.172
+
+Hardware Manager UUIDs:
+- UUID: 5a20b2c0-501a-4bf9-7014-d45513c5f3a1
+  Name: PVA
+  Type: INTERSIGHT
+  Deployment Type: ONPREM
+  Region: US
+  Created: 2026-01-16T17:39:23.000Z
+
+Total Hardware Managers: 1

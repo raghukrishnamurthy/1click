@@ -1,0 +1,125 @@
+{
+    "metadata": {
+        "length": 5,
+        "total_matches": 5
+    },
+    "nodes": [
+        {
+            "block_serial": "WZP2848975L",
+            "cpu_core_count": 64,
+            "cpu_vendor": "Intel",
+            "hardware_manager_data": {
+                "intersight_data": {
+                    "classification": "NUTANIX",
+                    "management_mode": "ISM",
+                    "node_name": "C220-WZP2848975L",
+                    "organizations": [
+                        "private-catalog",
+                        "default",
+                        "custom_org_20250220_143829"
+                    ],
+                    "tags": []
+                }
+            },
+            "hardware_manager_type": "INTERSIGHT",
+            "hardware_manager_uuid": "5a20b2c0-501a-4bf9-7014-d45513c5f3a1",
+            "memory_gb": 768,
+            "model": "UCSC-C220-M7S",
+            "node_serial": "WZP2848975L"
+        },
+        {
+            "block_serial": "FOX2449PEK2",
+            "cpu_core_count": 56,
+            "cpu_vendor": "Intel",
+            "hardware_manager_data": {
+                "intersight_data": {
+                    "classification": "NUTANIX",
+                    "domain": "Helium-Dev-4GFI-G7",
+                    "management_mode": "IMM",
+                    "node_name": "Helium-Dev-4GFI-G7-1-7",
+                    "organizations": [
+                        "default",
+                        "custom_org_20250220_143829",
+                        "private-catalog"
+                    ],
+                    "tags": []
+                }
+            },
+            "hardware_manager_type": "INTERSIGHT",
+            "hardware_manager_uuid": "5a20b2c0-501a-4bf9-7014-d45513c5f3a1",
+            "memory_gb": 512,
+            "model": "UCSX-210C-M7",
+            "node_serial": "FCH282271MZ"
+        },
+        {
+            "block_serial": "WZP27120LEL",
+            "cpu_core_count": 52,
+            "cpu_vendor": "Intel",
+            "hardware_manager_data": {
+                "intersight_data": {
+                    "classification": "NUTANIX",
+                    "management_mode": "ISM",
+                    "node_name": "C220-WZP27120LEL",
+                    "organizations": [
+                        "default",
+                        "custom_org_20250220_143829",
+                        "private-catalog"
+                    ],
+                    "tags": []
+                }
+            },
+            "hardware_manager_type": "INTERSIGHT",
+            "hardware_manager_uuid": "5a20b2c0-501a-4bf9-7014-d45513c5f3a1",
+            "memory_gb": 256,
+            "model": "UCSC-C220-M6S",
+            "node_serial": "WZP27120LEL"
+        },
+        {
+            "block_serial": "WZP27300FAQ",
+            "cpu_core_count": 40,
+            "cpu_vendor": "Intel",
+            "hardware_manager_data": {
+                "intersight_data": {
+                    "classification": "NUTANIX",
+                    "management_mode": "ISM",
+                    "node_name": "11",
+                    "organizations": [
+                        "default",
+                        "custom_org_20250220_143829",
+                        "private-catalog"
+                    ],
+                    "tags": []
+                }
+            },
+            "hardware_manager_type": "INTERSIGHT",
+            "hardware_manager_uuid": "5a20b2c0-501a-4bf9-7014-d45513c5f3a1",
+            "memory_gb": 128,
+            "model": "UCSC-C220-M7S",
+            "node_serial": "WZP27300FAQ"
+        },
+        {
+            "block_serial": "WZP271200FU",
+            "cpu_core_count": 32,
+            "cpu_vendor": "Intel",
+            "hardware_manager_data": {
+                "intersight_data": {
+                    "classification": "UNKNOWN",
+                    "domain": "Helium-Dev-4GFI-G7",
+                    "management_mode": "IMM",
+                    "node_name": "Helium-Dev-4GFI-G7-1",
+                    "organizations": [
+                        "default",
+                        "custom_org_20250220_143829",
+                        "private-catalog"
+                    ],
+                    "tags": []
+                }
+            },
+            "hardware_manager_type": "INTERSIGHT",
+            "hardware_manager_uuid": "5a20b2c0-501a-4bf9-7014-d45513c5f3a1",
+            "memory_gb": 512,
+            "model": "UCSC-C220-M6S",
+            "node_serial": "WZP271200FU"
+        }
+    ]
+}
