@@ -1,0 +1,25 @@
+[Cisco_CSeries_servers]
+server1 server_ip=10.193.129.9 user=admin default_password=password new_password=Nbv12345 NameServers=171.70.168.183 DomainName="" 
+server2 server_ip=10.193.129.65 user=admin default_password=password new_password=Nbv12345 NameServers=171.70.168.183 DomainName="" 
+
+
+
+
+
+
+
+
+
+
+
+
+[Cisco_CSeries_servers:vars]
+# Intersight PVA Configuration
+intersight_pva_ip=intersight-appliance-aa.cisco.com
+api_key=65e8b8ca756461301fedd26e/65e8d694756461301f941e8d/69034b95756461301f420e22
+api_private_key_path=/Users/ahimansh/1click/japikey-SecretKey.txt
+
+# CIMC credentials mapping for claiming
+server_cimc_ip={{ server_ip }}
+server_cimc_username={{ user }}
+server_cimc_password={{ new_password }} 

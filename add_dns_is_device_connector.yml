@@ -1,0 +1,94 @@
+---
+- name: Configure DNS via Device Connector API
+  hosts: Cisco_CSeries_servers
+  gather_facts: false
+  connection: local
+  vars:
+    comm_configs_uri: "/connector/CommConfigs"
+
+  tasks:
+
+    - name: Get session cookie from CIMC
+      uri:
+        url: "https://{{ server_ip }}/nuova"
+        method: POST
+        validate_certs: false
+        body: '<aaaLogin inPassword="{{ new_password }}" inName="{{ user }}" />'
+        return_content: yes
+        status_code: [200]
+      register: login_response
+      ignore_errors: yes
+
+    - name: Debug - Show login response
+      debug:
+        var: login_response
+      when: login_response is defined
+
+    - name: Extract outCookie from response
+      set_fact:
+        sessionCookie: "{{ login_response.content | regex_search('outCookie=\"([^\"]+)\"', '\\1') | first }}"
+      when: 
+        - login_response is defined
+        - login_response.status == 200
+        - login_response.content is defined
+        - "'outCookie' in login_response.content"
+
+    - name: Debug - Show extracted cookie
+      debug:
+        msg: "Session Cookie: {{ sessionCookie }}"
+      when: sessionCookie is defined
+
+  
+    - name: Get current CommConfigs to verify authentication
+      uri:
+        url: "https://{{ server_ip }}{{ comm_configs_uri }}"
+        method: GET
+        validate_certs: false
+        headers:
+          ucsmcookie: "ucsm-cookie={{ sessionCookie }}"
+          Origin: "https://{{ server_ip }}"
+          Referer: "https://{{ server_ip }}/uiconnector/index.html"
+          language: "en"
+        status_code: [200, 201]
+      register: current_config
+      when: sessionCookie is defined
+      ignore_errors: yes
+
+    - name: Debug - Show current configuration
+      debug:
+        var: current_config
+      when: current_config is defined and current_config.status == 200
+
+    - name: Configure DNS Name Servers and Domain Name
+      uri:
+        url: "https://{{ server_ip }}{{ comm_configs_uri }}"
+        method: PUT
+        validate_certs: false
+        headers:
+          ucsmcookie: "ucsm-cookie={{ sessionCookie }}"
+        body_format: json
+        body:
+          NameServers: "{{ NameServers.split(',') if NameServers is defined and NameServers != '' else [] }}"
+          DomainName: "{{ DomainName | default('') }}"
+        status_code: [200, 201, 204]
+      register: dns_config_response
+      when: sessionCookie is defined
+      ignore_errors: yes
+
+
+
+    - name: Debug - Show DNS configuration result
+      debug:
+        msg:
+          - "Status code: {{ dns_config_response.status | default('Not defined') }}"
+          - "Server: {{ server_ip }}"
+          - "Name Servers configured: {{ NameServers.split(',') if NameServers is defined and NameServers != '' else [] }}"
+          - "Domain Name configured: {{ DomainName | default('') }}"
+          - "Success: {{ dns_config_response.status is defined and dns_config_response.status in [200, 201, 204] }}"
+      when: dns_config_response is defined
+
+    - name: Debug - Show complete response
+      debug:
+        var: dns_config_response
+      when: dns_config_response is defined and dns_config_response.status is defined
+

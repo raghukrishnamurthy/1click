@@ -1,0 +1,52 @@
+# Onboarded nodes to be deployed  from Foundation Central
+# Retrieved: 2026-01-23T04:08:29Z
+# Foundation Central: 10.193.210.172
+
+Nodes UUIDs:
+- UUID: 8e54f28b-c106-4512-627c-e807d93e958b
+  block_serial: WZP27120LEL
+  node_serial: WZP27120LEL
+  model: UCSC-C220-M6S
+  cpu_core_count: 52
+  cpu_vendor: Intel
+  memory_gb: 256
+  hardware_manager_type: INTERSIGHT
+  hardware_manager_uuid: 5a20b2c0-501a-4bf9-7014-d45513c5f3a1
+- UUID: a2fc21e8-996f-4106-561e-e8d4b8c10135
+  block_serial: WZP27300FAQ
+  node_serial: WZP27300FAQ
+  model: UCSC-C220-M7S
+  cpu_core_count: 40
+  cpu_vendor: Intel
+  memory_gb: 128
+  hardware_manager_type: INTERSIGHT
+  hardware_manager_uuid: 5a20b2c0-501a-4bf9-7014-d45513c5f3a1
+- UUID: e2acef95-d223-4674-664f-c170fdd8bbee
+  block_serial: WZP2848975L
+  node_serial: WZP2848975L
+  model: UCSC-C220-M7S
+  cpu_core_count: 64
+  cpu_vendor: Intel
+  memory_gb: 768
+  hardware_manager_type: INTERSIGHT
+  hardware_manager_uuid: 5a20b2c0-501a-4bf9-7014-d45513c5f3a1
+- UUID: 43257920-5028-492d-7cb4-3ab38e3f7f86
+  block_serial: WZP271200FU
+  node_serial: WZP271200FU
+  model: UCSC-C220-M6S
+  cpu_core_count: 32
+  cpu_vendor: Intel
+  memory_gb: 512
+  hardware_manager_type: INTERSIGHT
+  hardware_manager_uuid: 5a20b2c0-501a-4bf9-7014-d45513c5f3a1
+- UUID: ecc45f65-61d6-47e1-61c2-80754816483b
+  block_serial: FOX2449PEK2
+  node_serial: FCH282271MZ
+  model: UCSX-210C-M7
+  cpu_core_count: 56
+  cpu_vendor: Intel
+  memory_gb: 512
+  hardware_manager_type: INTERSIGHT
+  hardware_manager_uuid: 5a20b2c0-501a-4bf9-7014-d45513c5f3a1
+
+Total Hardware Managers: 1

@@ -1,0 +1,12 @@
+[foundation_central_onboard]
+fc_server1 foundation_central_ip=10.193.210.172 fc_port=9440
+
+[foundation_central_onboard:vars]
+# Foundation Central Authentication
+fc_username=admin
+fc_password=Cisco@1357
+
+# API Configuration
+fc_api_base_path=/api/fc/v1
+
+

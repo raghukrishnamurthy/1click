@@ -1,0 +1,48 @@
+---
+- name: Deploy Node via Foundation Central
+  hosts: foundation_central_deployment
+  connection: local
+  gather_facts: true
+
+  vars:
+    fc_imaged_clusters_path: "/api/fc/v1/imaged_clusters"
+
+
+  tasks:
+    - name: Display Foundation Central connection information
+      debug:
+        msg:
+          - "Foundation Central IP: {{ foundation_central_ip }}"
+          - "Foundation Central Port: {{ fc_port }}"
+          - "API Base Path: {{ fc_api_base_path }}"
+          - "Username: {{ fc_username }}"
+
+
+
+    - name: Ensure imaged cluster payload is provided
+      assert:
+        that:
+          - imaged_cluster_body is defined
+        fail_msg: "imaged_cluster_body must be defined in inventory_foundation_central"
+
+    - name: Create imaged cluster
+      uri:
+        url: "https://{{ foundation_central_ip }}:{{ fc_port }}{{ fc_imaged_clusters_path }}"
+        method: POST
+        user: "{{ fc_username }}"
+        password: "{{ fc_password }}"
+        force_basic_auth: yes
+        validate_certs: false
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body_format: json
+        body: "{{ imaged_cluster_body | from_json }}"
+        status_code: [200, 201, 202]
+      register: imaged_cluster_response
+      ignore_errors: yes
+
+    - name: Show imaged cluster response
+      debug:
+        var: imaged_cluster_response
+

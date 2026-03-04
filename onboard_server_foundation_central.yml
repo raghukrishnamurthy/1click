@@ -1,0 +1,225 @@
+---
+- name: Onboard Servers to Foundation Central
+  hosts: foundation_central_onboard
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Display Foundation Central connection information
+      debug:
+        msg:
+          - "Foundation Central IP: {{ foundation_central_ip }}"
+          - "Foundation Central Port: {{ fc_port }}"
+          - "API Base Path: {{ fc_api_base_path }}"
+          - "Username: {{ fc_username }}"
+
+    - name: List hardware managers from Foundation Central
+      uri:
+        url: "https://{{ foundation_central_ip }}:{{ fc_port }}{{ fc_api_base_path }}/hardware_managers/list"
+        method: POST
+        user: "{{ fc_username }}"
+        password: "{{ fc_password }}"
+        force_basic_auth: yes
+        validate_certs: false
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body_format: json
+        body:
+          length: 0
+          offset: 0
+        status_code: [200, 201]
+      register: hardware_managers_list
+      ignore_errors: yes
+
+    - name: Debug - Show complete hardware managers response
+      debug:
+        var: hardware_managers_list
+      when: hardware_managers_list is defined
+
+    - name: Extract and display hardware manager UUIDs
+      debug:
+        msg:
+          - "Total Hardware Managers: {{ hardware_managers_list.json.metadata.total_matches | default(0) }}"
+          - "Hardware Manager UUIDs: {{ hardware_managers_list.json.hardware_managers | map(attribute='hardware_manager_uuid') | list }}"
+      when: 
+        - hardware_managers_list.status is defined
+        - hardware_managers_list.status == 200
+        - hardware_managers_list.json.hardware_managers is defined
+
+    - name: Register hardware manager UUIDs for future operations
+      set_fact:
+        hardware_manager_uuids: "{{ hardware_managers_list.json.hardware_managers | map(attribute='hardware_manager_uuid') | list }}"
+        hardware_managers: "{{ hardware_managers_list.json.hardware_managers }}"
+      when: 
+        - hardware_managers_list.status is defined
+        - hardware_managers_list.status == 200
+        - hardware_managers_list.json.hardware_managers is defined
+
+    - name: Save hardware manager information to file
+      copy:
+        content: |
+          # Hardware Managers from Foundation Central
+          # Retrieved: {{ lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ') }}
+          # Foundation Central: {{ foundation_central_ip }}
+          
+          Hardware Manager UUIDs:
+          {% for manager in hardware_managers %}
+          - UUID: {{ manager.hardware_manager_uuid }}
+            Name: {{ manager.name | default('N/A') }}
+            Type: {{ manager.type | default('N/A') }}
+            Deployment Type: {{ manager.deployment_type | default('N/A') }}
+            Region: {{ manager.region | default('N/A') }}
+            Created: {{ manager.created_timestamp | default('N/A') }}
+          {% endfor %}
+          
+          Total Hardware Managers: {{ hardware_managers | length }}
+        dest: "./fc-api-respones/hardware_managers_{{ foundation_central_ip }}.txt"
+      when: hardware_managers is defined
+      delegate_to: localhost
+
+    - name: Display saved hardware manager information
+      debug:
+        msg:
+          - "Hardware manager information saved to: /tmp/hardware_managers_{{ foundation_central_ip }}.txt"
+          - "You can reference these UUIDs in future playbooks using the 'hardware_manager_uuids' variable"
+      when: hardware_managers is defined
+
+    - name: Display error if API call failed
+      debug:
+        msg:
+          - "Failed to retrieve hardware managers from Foundation Central"
+          - "Status Code: {{ hardware_managers_list.status | default('Unknown') }}"
+          - "Error: {{ hardware_managers_list.msg | default('Unknown error') }}"
+      when: hardware_managers_list.failed is defined and hardware_managers_list.failed
+
+    - name: List nodes available to be onboarded to Foundation Central
+      uri:
+        url: "https://{{ foundation_central_ip }}:{{ fc_port }}{{ fc_api_base_path }}/hardware_managers/{{ hardware_manager_uuids[0] }}/nodes/list"
+        method: POST
+        user: "{{ fc_username }}"
+        password: "{{ fc_password }}"
+        force_basic_auth: yes
+        validate_certs: false
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body_format: json
+        body:
+          length: 0
+          offset: 0
+        status_code: [200, 201]
+      register: hardware_managers_nodes_list
+      ignore_errors: yes
+
+    - name: Debug - Show complete nodes response
+      debug:
+        var: hardware_managers_nodes_list
+      when: hardware_managers_nodes_list is defined
+
+
+
+    - name: Save nodes response to file
+      copy:
+        content: "{{ hardware_managers_nodes_list.json | default([]) | to_nice_json }}"
+        dest: "./fc-api-respones/hardware_managers_nodes_{{ foundation_central_ip }}.txt"
+      when: hardware_managers_nodes_list is defined
+      delegate_to: localhost
+
+
+
+    # # ===== Node Onboarding Section =====
+    
+
+    - name: Onboard nodes to Foundation Central
+      uri:
+        url: "https://{{ foundation_central_ip }}:{{ fc_port }}{{ fc_api_base_path }}/imaged_nodes/onboard"
+        method: POST
+        user: "{{ fc_username }}"
+        password: "{{ fc_password }}"
+        force_basic_auth: yes
+        validate_certs: false
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body_format: json
+        body: "{{ item }}"
+        status_code: [200, 201, 202]
+      loop: "{{ hardware_managers_nodes_list.json.nodes | default([]) }}"
+      loop_control:
+        label: "{{ item.node_serial | default('unknown') }}"
+      register: onboard_results
+      when: 
+        - hardware_managers_nodes_list is defined
+        - hardware_managers_nodes_list.json.nodes is defined
+      ignore_errors: yes
+
+    - name: Display onboarding results summary
+      debug:
+        msg:
+          - "Onboarded {{ onboard_results.results | selectattr('status', 'defined') | selectattr('status', 'in', [200, 201, 202]) | list | length }} out of {{ hardware_managers_nodes_list.json.nodes | default([]) | length }} nodes"
+          - "Failed: {{ onboard_results.results | selectattr('failed', 'defined') | selectattr('failed', 'equalto', true) | list | length }}"
+      when: onboard_results is defined
+
+    - name: Wait for 30 seconds before listing nodes
+      pause:
+        seconds: 30
+
+##List nodes available to be deployed to Foundation Central
+
+    - name: List nodes available to be deployed to Foundation Central
+      uri:
+        url: "https://{{ foundation_central_ip }}:{{ fc_port }}{{ fc_api_base_path }}/imaged_nodes/list"
+        method: POST
+        user: "{{ fc_username }}"
+        password: "{{ fc_password }}"
+        force_basic_auth: yes
+        validate_certs: false
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+        body_format: json
+        body:
+          length: 0
+          filters:
+            node_state: "STATE_ONBOARDED"
+            hardware_manager_type: "INTERSIGHT"
+            hardware_manager_uuid: "{{ hardware_manager_uuids[0] }}"
+          offset: 0
+        status_code: [200, 201]
+      register: imaged_nodes_list
+
+
+    - name: Save nodes response to file
+      copy:
+        content: "{{ imaged_nodes_list.json | default([]) | to_nice_json }}"
+        dest: "./fc-api-respones/imaged_nodes_list_{{ foundation_central_ip }}.txt"
+      when: imaged_nodes_list is defined
+      delegate_to: localhost
+
+    - name:  nodes data for deployment to file
+      copy:
+        content: |
+          # Onboarded nodes to be deployed  from Foundation Central
+          # Retrieved: {{ lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ') }}
+          # Foundation Central: {{ foundation_central_ip }}
+          
+          Nodes UUIDs:
+          {% for node in imaged_nodes_list.json.imaged_nodes %}
+          - UUID: {{ node.imaged_node_uuid }}
+            block_serial: {{ node.block_serial | default('N/A') }}
+            node_serial: {{ node.node_serial | default('N/A') }}
+            model: {{ node.model | default('N/A') }}
+            cpu_core_count: {{ node.cpu_core_count | default('N/A') }}
+            cpu_vendor: {{ node.cpu_vendor | default('N/A') }}
+            memory_gb: {{ node.memory_gb | default('N/A') }}
+            hardware_manager_type: {{ node.hardware_manager_type | default('N/A') }}
+            hardware_manager_uuid: {{ node.hardware_manager_uuid | default('N/A') }}
+          {% endfor %}
+          
+          Total Hardware Managers: {{ hardware_managers | length }}
+        dest: "./imaged_nodes_list"
+      when: imaged_nodes_list is defined
+      delegate_to: localhost
+      
+       

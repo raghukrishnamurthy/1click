@@ -1,0 +1,46 @@
+[foundation_central_deployment]
+fc_server1 foundation_central_ip=10.193.210.172 fc_port=9440
+
+[foundation_central_deployment:vars]
+# Foundation Central Authentication
+fc_username=admin
+fc_password=Cisco@1357
+
+# API Configuration
+fc_api_base_path=/api/fc/v1
+
+# Cluster Deployment Configuration
+aos_package_url=http://10.193.229.229:8080/images/AOS/7.3.0.5/nutanix_installer_package-release-ganges-7.3.0.5-stable-d17cae75ab438f94b52004f0b79f9d70cddc8517-x86_64.tar.gz
+hypervisor_iso_url=http://10.193.229.229:8080/images/AOS/7.3.0.5/AHV-DVD-x86_64-10.3.0.1-24.iso
+cluster_name=1clicktest
+cluster_external_ip=
+cvm_dns_servers=171.70.168.183
+cvm_ntp_servers=ntp.xyz.abc.com
+hypervisor_dns_servers=171.70.168.183
+hypervisor_ntp_servers=ntp.xyz.abc.com
+redundancy_factor=2
+timezone=UTC
+api_key_uuid=ce7fed71-7f6e-4162-5c5c-e1485f7bfaed
+
+# Node 1 Configuration
+node1_cvm_gateway=10.1.1.254
+node1_cvm_ip=10.1.1.21
+node1_cvm_netmask=255.255.255.0
+node1_hypervisor_gateway=10.1.1.254
+node1_hypervisor_hostname=1-clickcluster-1
+node1_hypervisor_ip=10.1.1.11
+node1_hypervisor_netmask=255.255.255.0
+node1_imaged_node_uuid=8e54f28b-c106-4512-627c-e807d93e958b
+
+# Node 2 Configuration
+node2_cvm_gateway=10.1.1.254
+node2_cvm_ip=10.1.1.22
+node2_cvm_netmask=255.255.255.0
+node2_hypervisor_gateway=10.1.1.254
+node2_hypervisor_hostname=1-clickcluster-2
+node2_hypervisor_ip=10.1.1.12
+node2_hypervisor_netmask=255.255.255.0
+node2_imaged_node_uuid=a2fc21e8-996f-4106-561e-e8d4b8c10135
+
+# Full JSON payload for cluster deployment
+imaged_cluster_body='{"aos_package_sha256sum":"","aos_package_url":"http://10.193.229.229:8080/images/AOS/7.3.0.5/nutanix_installer_package-release-ganges-7.3.0.5-stable-d17cae75ab438f94b52004f0b79f9d70cddc8517-x86_64.tar.gz","cluster_external_ip":"","cluster_name":"1clicktest","cluster_password":"","common_network_settings":{"cvm_dns_servers":["171.70.168.183"],"cvm_ntp_servers":["ntp.xyz.abc.com"],"hypervisor_dns_servers":["171.70.168.183"],"hypervisor_ntp_servers":["ntp.xyz.abc.com"]},"external_access_keys":[],"fc_metadata":{"api_key_uuid":"ce7fed71-7f6e-4162-5c5c-e1485f7bfaed"},"hypervisor_isos":[{"hypervisor_type":"kvm","sha256sum":"","url":"http://10.193.229.229:8080/images/AOS/7.3.0.5/AHV-DVD-x86_64-10.3.0.1-24.iso"}],"lockdown_mode":false,"nodes_list":[{"cvm_gateway":"10.1.1.254","cvm_ip":"10.1.1.21","cvm_netmask":"255.255.255.0","cvm_ram_gb":0,"hypervisor_gateway":"10.1.1.254","hypervisor_hostname":"1-clickcluster-1","hypervisor_ip":"10.1.1.11","hypervisor_netmask":"255.255.255.0","hypervisor_type":"kvm","image_now":true,"imaged_node_uuid":"8e54f28b-c106-4512-627c-e807d93e958b","network_bond_settings":{"mode":"default","lacp_settings":{}},"rdma_passthrough":false,"reuse_existing_software":false,"server_configuration_data":{"intersight_data":{"vic_fec_mode":"Off"}}},{"cvm_gateway":"10.1.1.254","cvm_ip":"10.1.1.22","cvm_netmask":"255.255.255.0","cvm_ram_gb":0,"hypervisor_gateway":"10.1.1.254","hypervisor_hostname":"1-clickcluster-2","hypervisor_ip":"10.1.1.12","hypervisor_netmask":"255.255.255.0","hypervisor_type":"kvm","image_now":true,"imaged_node_uuid":"a2fc21e8-996f-4106-561e-e8d4b8c10135","network_bond_settings":{"mode":"default","lacp_settings":{}},"rdma_passthrough":false,"reuse_existing_software":false,"server_configuration_data":{"intersight_data":{"vic_fec_mode":"Off"}}}],"redundancy_factor":2,"server_configuration_data":{"intersight_data":{"organization":"default"},"skip_cleanup":false},"ssh_using_password":false,"skip_cluster_creation":false,"timezone":"UTC"}'
